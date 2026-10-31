@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<!-- SudoKids · Geraszka -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#006874">
+<title>SudoKids</title>
+<meta name="author" content="Geraszka">
+<meta name="description" content="SudoKids: a 4x4 sudoku for kids with stickers to collect.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* Material 3 színszerepek (design tokenek), világos és sötét séma */
+:root{--primary:#006874;--on-primary:#fff;--primary-container:#97f0ff;--secondary-container:#cce8ec;--on-secondary-container:#051f23;
+--surface:#f5fafb;--surface-container:#e9eff0;--surface-high:#e3e9ea;--on-surface:#171d1e;--on-surface-variant:#3f484a;
+--outline:#6f797b;--outline-variant:#bfc8ca;--error:#ba1a1a;--error-container:#ffdad6;--peer:#d9eaee;--cell:#f9fcfc;--sel:#ffd45e;--scrim:rgba(0,0,0,.5)}
+@media (prefers-color-scheme:dark){:root{--primary:#4fd8eb;--on-primary:#00363d;--primary-container:#004f58;--secondary-container:#334b4f;--on-secondary-container:#cce8ec;
+--surface:#0e1415;--surface-container:#1a2122;--surface-high:#252b2c;--on-surface:#dee3e5;--on-surface-variant:#bfc8ca;
+--outline:#899294;--outline-variant:#3f484a;--error:#ffb4ab;--error-container:#93000a;--peer:#223a41;--cell:#222b2d;--sel:#7a6420}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--surface);color:var(--on-surface);font-family:Roboto,"Segoe UI",system-ui,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;display:flex;justify-content:center;padding:env(safe-area-inset-top,0px) 16px env(safe-area-inset-bottom,0px)}
+main{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px;padding:16px 0;justify-content:center}
+h1{margin:0;font-size:1.5rem;font-weight:500;flex:1}
+.top,.sub{display:flex;align-items:center;gap:8px}
+.sub{justify-content:space-between}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+button::after{content:"";position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .15s}
+button:hover::after{opacity:.08}button:active::after{opacity:.14}
+button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.tonal{background:var(--secondary-container);color:var(--on-secondary-container)}
+.filled{background:var(--primary);color:var(--on-primary)}
+.round{width:48px;height:48px;border-radius:16px;font-size:1.5rem;flex:none}
+.pill{height:48px;padding:0 18px;border-radius:24px;font-size:1rem;font-weight:500}
+#setBtn{font-size:1.3rem;letter-spacing:.1em}
+#stars{display:flex}
+.star{width:34px;height:48px;opacity:.3;border-radius:12px;color:#f5b301}
+.star.on{opacity:1}
+.flag{display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.msg{min-height:1.3em;margin:0;color:var(--on-surface-variant)}
+#board,#pad,#collgrid,.palette,.slots,.syms,#stars,.sub{direction:ltr}
+#board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));background:var(--cell);border:3px solid var(--on-surface);border-radius:20px;overflow:hidden;aspect-ratio:1}
+.cell{border:1px solid var(--outline);font-size:clamp(1.8rem,10vw,2.6rem);font-weight:500;background:transparent;color:var(--primary);padding:0;border-radius:0;min-width:0;min-height:0}
+.cell.emoji{font-weight:400}
+.cell.given{color:var(--on-surface);font-weight:700;cursor:default}
+.cell.r1{border-bottom:3px solid var(--on-surface)}
+.cell.c1{border-right:3px solid var(--on-surface)}
+.cell.peer{background:var(--peer)}
+.cell.sel{background:var(--sel);color:var(--on-surface)}
+.cell.bad{background:var(--error-container);color:var(--error)}
+@keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-6px)}30%{transform:translateX(6px)}45%{transform:translateX(-5px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)}}
+.cell.shake{animation:shake .5s}
+.notes{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;width:100%;height:100%;place-items:center;font-size:clamp(.85rem,4.4vw,1.15rem);font-weight:400;opacity:.8;line-height:1}
+#pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+#pad button{height:56px;border-radius:16px;font-size:1.5rem;font-weight:500;background:var(--secondary-container);color:var(--on-secondary-container)}
+#pad.notemode button{outline:2px dashed var(--primary);outline-offset:-4px}
+#notebtn{height:48px;border-radius:24px;border:1px solid var(--outline);font-weight:500}
+#notebtn[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.modal{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.modal[hidden]{display:none}
+.mbox{background:var(--surface-high);color:var(--on-surface);border-radius:28px;padding:20px;width:100%;max-width:440px;max-height:100%;overflow:auto}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;font-size:1.3rem}
+.mclose{width:40px;height:40px;border-radius:20px;flex:none}
+.optlist{display:flex;flex-direction:column;gap:8px}
+#langlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:16px;border:1px solid var(--outline-variant);width:100%;text-align:start;justify-content:flex-start}
+.opt.on{background:var(--secondary-container);border:2px solid var(--primary)}
+.opt .nm{font-weight:500}
+.opt .syms{display:flex;gap:10px;font-size:1.6rem;margin-inline-start:auto}
+.hint{margin:12px 0 0;font-size:.9rem;color:var(--on-surface-variant)}
+.hint a{color:var(--primary);font-weight:500}
+.slots{display:flex;gap:8px;margin-top:8px}
+.slots button{flex:1;height:52px;font-size:1.6rem;border-radius:14px;border:1px solid var(--outline-variant)}
+.slots button.on{border:2px solid var(--primary);background:var(--primary-container)}
+.inrow{display:flex;gap:8px;margin-top:10px}
+input{flex:1;min-width:0;font:inherit;font-size:1rem;padding:12px 14px;border-radius:12px;border:1px solid var(--outline);background:var(--surface);color:var(--on-surface)}
+.cathead{margin:12px 0 4px;font-size:.85rem;color:var(--on-surface-variant);font-weight:500}
+.palette{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.palette button{font-size:1.2rem;height:34px;border-radius:8px;border:1px solid var(--outline-variant)}
+.palette button.used{border:2px solid var(--primary);background:var(--primary-container)}
+.confbtns{display:flex;gap:8px}
+.confbtns button{flex:1;flex-direction:column;gap:6px;padding:14px 4px;border-radius:16px;background:var(--secondary-container);color:var(--on-secondary-container);font-size:.85rem;font-weight:500}
+.confbtns .ic svg{width:28px;height:28px}
+svg{display:block}
+.center{text-align:center}
+.wintitle{font-size:clamp(1.6rem,8vw,2.2rem);font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--primary)}
+.winsticker{font-size:6rem;line-height:1.2;margin:8px 0}
+#collgrid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px}
+.ci{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:clamp(.9rem,4.6vw,1.5rem);border-radius:6px;background:var(--surface-container)}
+.ci.q{color:var(--outline);font-weight:500}
+button.ci{border:0;padding:0;cursor:pointer;color:inherit}
+.zoom{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;background:rgba(0,0,0,.5)}
+.zoom[hidden]{display:none}
+.zoom .big{font-size:9rem;line-height:1;background:var(--surface-high);border-radius:40px;padding:24px 34px;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+.zoom .num{color:#fff;margin-top:12px;font-weight:500;font-size:1.1rem}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.codebox{margin-top:16px;font-size:.9rem}
+.codecols{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.codecols .g2{flex:1;min-width:190px}
+.lbl{display:block;margin-bottom:4px;color:var(--on-surface-variant)}
+#codeout{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.8rem;font-weight:700;letter-spacing:.15em;color:var(--primary);line-height:48px;direction:ltr}
+.coderow{display:flex;gap:8px}
+#codemsg{margin:8px 0 0;min-height:1.3em}
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <h1 data-i18n="title"></h1>
+    <button id="langBtn" class="tonal round"></button>
+    <button id="collBtn" class="tonal pill"></button>
+  </header>
+  <div class="sub">
+    <button id="setBtn" class="tonal pill"></button>
+    <div id="stars" role="group"></div>
+    <button id="newBtn" class="filled round" data-icon="add"></button>
+  </div>
+  <p class="msg" id="msg" aria-live="polite"></p>
+  <div id="board" role="grid"></div>
+  <div id="pad"></div>
+  <button id="notebtn" aria-pressed="false"></button>
+</main>
+
+<div class="modal" id="mlang" hidden role="dialog" aria-modal="true"><div class="mbox">
+  <div class="mhead"><strong data-i18n="language"></strong><button class="mclose tonal" data-icon="close"></button></div>
+  <input id="langsearch" type="search" autocomplete="off" spellcheck="false" style="width:100%;margin-bottom:10px">
+  <div id="langlist" class="optlist"></div>
+</div></div>
+
+<div class="modal" id="mset" hidden role="dialog" aria-modal="true"><div class="mbox">
+  <div class="mhead"><strong data-i18n="symbols"></strong><button class="mclose tonal" data-icon="close"></button></div>
+  <div id="setlist" class="optlist"></div>
+</div></div>
+
+<div class="modal" id="mconf" hidden role="dialog" aria-modal="true"><div class="mbox">
+  <div class="mhead"><strong data-i18n="confirmTitle"></strong></div>
+  <div class="confbtns">
+    <button id="cRestart"><span class="ic" data-icon="replay"></span><span data-i18n="restart"></span></button>
+    <button id="cNew"><span class="ic" data-icon="add"></span><span data-i18n="newPuzzle"></span></button>
+    <button id="cCancel"><span class="ic" data-icon="close"></span><span data-i18n="cancel"></span></button>
+  </div>
+</div></div>
+
+<div class="modal" id="mwin" hidden role="dialog" aria-modal="true"><div class="mbox center">
+  <div class="mhead" style="justify-content:flex-end"><button class="mclose tonal" data-icon="close"></button></div>
+  <div class="wintitle" data-i18n="winTitle"></div>
+  <div class="winsticker" id="winSticker"></div>
+  <p id="winMsg"></p>
+  <button id="winNew" class="filled pill"><span data-icon="add"></span><span data-i18n="newPuzzle"></span></button>
+</div></div>
+
+<div class="modal" id="mcoll" hidden role="dialog" aria-modal="true"><div class="mbox">
+  <div class="mhead"><strong id="collcount"></strong><button class="mclose tonal" data-icon="close"></button></div>
+  <div id="collgrid"></div>
+  <div class="codebox">
+    <div class="codecols">
+      <div><span class="lbl" data-i18n="codeLabel"></span><div id="codeout"></div></div>
+      <div class="g2"><label class="lbl" for="codein" data-i18n="loadLabel"></label>
+        <div class="coderow"><input id="codein" maxlength="5" placeholder="XXX" autocapitalize="characters" autocomplete="off" spellcheck="false"><button id="codeload" class="filled pill" data-i18n="load"></button></div></div>
+    </div>
+    <p id="codemsg" aria-live="polite"></p>
+  </div>
+</div></div>
+
+<div id="zoom" class="zoom" hidden><div class="big" id="zoomBig"></div><div class="num" id="zoomNum"></div></div>
+
+<script src="lang.js"></script>
+<script src="emojik.js"></script>
+<script>
+(function(){
+if(!window.LANGS||!window.EMOJI_DATA){document.body.innerHTML='<p style="padding:24px;font-family:sans-serif">lang.js / emojik.js not found. Upload both next to index.html.</p>';return;}
+var N=4,B=2,D=window.EMOJI_DATA,STK=D.stickers;
+var $=function(id){return document.getElementById(id);};
+var qsa=function(s){return Array.prototype.slice.call(document.querySelectorAll(s));};
+function mk(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+// Material ikonok (24x24-es SVG útvonalak)
+var ICONS={add:'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
+ close:'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
+ replay:'M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z',
+ backspace:'M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z',
+ check:'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+ star:'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
+ trophy:'M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.95V19H7v2h10v-2h-4v-3.11c1.63-.32 2.98-1.45 3.61-2.95C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z'};
+function icon(n){return '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="'+ICONS[n]+'"/></svg>';}
+
+// --- Nyelv: mentett választás, különben az eszköz nyelve, különben angol ---
+var LANGS=window.LANGS,LORDER=Object.keys(LANGS),lang=lsGet('sudokuLang');
+var ALIAS={iw:'he',nb:'no',nn:'no','in':'id',zh:'zh','zh-cn':'zh','zh-sg':'zh','zh-hans':'zh','zh-tw':'zh-tw','zh-hk':'zh-tw','zh-mo':'zh-tw','zh-hant':'zh-tw'};
+function pickLang(tags){
+  for(var i=0;i<tags.length;i++){
+    var tg=String(tags[i]).toLowerCase(),b=tg.split('-')[0];
+    if(ALIAS[tg])tg=ALIAS[tg];if(LANGS[tg])return tg;
+    if(ALIAS[b])b=ALIAS[b];if(LANGS[b])return b;
+  }
+  return LANGS.en?'en':LORDER[0];
+}
+if(!LANGS[lang])lang=pickLang(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en']);
+function t(k,p){var s=(LANGS[lang]&&LANGS[lang][k])||(LANGS.en&&LANGS.en[k])||k;if(p)for(var x in p)s=s.replace('{'+x+'}',p[x]);return s;}
+// A zászlók SVG-ként vannak rajzolva, mert egyes gépeken a böngésző nem jeleníti meg a zászló-emojikat.
+function flagInner(k){var f=LANGS[k].flag||'';return f.charAt(0)==='@'?flagInner(f.slice(1)):f;}
+function flagSvg(k){return '<svg class="flag" viewBox="0 0 60 40" width="32" height="21" aria-hidden="true">'+flagInner(k)+'</svg>';}
+
+// --- Jelkészletek az emojik.js adataiból ---
+var SETS=Object.keys(D.sets).map(function(id){return {id:id,sym:D.sets[id]};});
+SETS.push({id:'num',sym:['1','2','3','4']},{id:'custom'});
+var setId=lsGet('sudokuSet2'),customSlot=0,customSyms=D.customDefault.slice(0,4);
+if(!SETS.some(function(x){return x.id===setId;}))setId=SETS[0].id;
+try{var cs=JSON.parse(lsGet('sudokuCustom'));
+  if(Array.isArray(cs)&&cs.length===4&&cs.every(function(x){return typeof x==='string'&&x&&x.length<=16;}))customSyms=cs;}catch(e){}
+function curSyms(){return setId==='custom'?customSyms:SETS.filter(function(x){return x.id===setId;})[0].sym;}
+function sym(v){return curSyms()[v-1];}
+function isEmoji(){return setId!=='num';}
+function firstG(s){
+  s=String(s).trim();if(!s)return '';
+  if(window.Intl&&Intl.Segmenter){var r=new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(s)[Symbol.iterator]().next();return r.done?'':r.value.segment;}
+  return Array.from(s)[0]||'';
+}
+// Beírható közvetlenül egy emoji, vagy Unicode-kód (U+1F436 / 1F436)
+function parseSym(s){
+  s=String(s).trim();
+  if(/^U\+/i.test(s)||/^[0-9a-f]{5,6}$/i.test(s)){
+    try{
+      var cps=s.replace(/U\+/gi,' ').trim().split(/[\s,]+/).map(function(h){return parseInt(h,16);});
+      if(cps.every(function(c){return c>=32&&c<=0x10FFFF&&!(c>=0xD800&&c<=0xDFFF);}))return firstG(String.fromCodePoint.apply(null,cps));
+    }catch(e){}
+    return '';
+  }
+  return firstG(s);
+}
+
+var grid=[],given=[],notes=[],puzzle=[],noteMode=false,sel=-1,solved=false,rewarded=false,shakeCells=[],pendingLevel=null;
+var count=parseInt(lsGet('sudokuCount'),10)||0;if(count<0||count>STK.length)count=0;
+var level=parseInt(lsGet('sudokuLevel'),10);if(!(level>=1&&level<=3))level=2;
+var boardEl=$('board'),msgEl=$('msg'),pad=$('pad'),noteBtn=$('notebtn'),collBtn=$('collBtn');
+
+// --- Felugró ablakok ---
+var MODALS=['mlang','mset','mconf','mwin','mcoll'];
+function openM(id){closeM();$(id).hidden=false;}
+function closeM(){MODALS.forEach(function(id){$(id).hidden=true;});}
+function anyOpen(){return MODALS.some(function(id){return !$(id).hidden;});}
+MODALS.forEach(function(id){$(id).addEventListener('click',function(e){if(e.target===$(id)){if(id==='mconf')pendingLevel=null;closeM();}});});
+qsa('.mclose').forEach(function(b){b.addEventListener('click',closeM);});
+
+// --- Feladvány ---
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var x=a[i];a[i]=a[j];a[j]=x;}return a;}
+function makeSolution(){
+  var base=[[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]],dg=shuffle([1,2,3,4]);
+  var r0=shuffle([0,1]),r1=shuffle([0,1]),c0=shuffle([0,1]),c1=shuffle([0,1]);
+  var ro=[r0[0]*2+r1[0],r0[0]*2+(1-r1[0]),r0[1]*2+r1[1],r0[1]*2+(1-r1[1])];
+  var co=[c0[0]*2+c1[0],c0[0]*2+(1-c1[0]),c0[1]*2+c1[1],c0[1]*2+(1-c1[1])],g=[];
+  for(var r=0;r<N;r++)for(var c=0;c<N;c++)g.push(dg[base[ro[r]][co[c]]-1]);
+  return g;
+}
+function candidates(g,i){
+  var r=Math.floor(i/N),c=i%N,u={};
+  for(var k=0;k<N;k++){u[g[r*N+k]]=1;u[g[k*N+c]]=1;}
+  var br=r-r%B,bc=c-c%B;
+  for(var y=0;y<B;y++)for(var x=0;x<B;x++)u[g[(br+y)*N+bc+x]]=1;
+  var res=[];for(var d=1;d<=N;d++)if(!u[d])res.push(d);return res;
+}
+function countSolutions(g,limit){
+  var idx=-1;for(var i=0;i<g.length;i++)if(!g[i]){idx=i;break;}
+  if(idx<0)return 1;
+  var n=0,cs=candidates(g,idx);
+  for(var k=0;k<cs.length&&n<limit;k++){g[idx]=cs[k];n+=countSolutions(g,limit-n);g[idx]=0;}
+  return n;
+}
+// Sorok, oszlopok és 2x2-es blokkok
+var UNITS=[];
+(function(){
+  for(var a=0;a<N;a++){var r=[],c=[];for(var b=0;b<N;b++){r.push(a*N+b);c.push(b*N+a);}UNITS.push(r,c);}
+  for(var br=0;br<N;br+=B)for(var bc=0;bc<N;bc+=B){var k=[];for(var y=0;y<B;y++)for(var x=0;x<B;x++)k.push((br+y)*N+bc+x);UNITS.push(k);}
+})();
+// 1 csillag: mindig van olyan sor, oszlop vagy blokk, amelyből csak egy jel hiányzik
+function solvableByUnits(p){
+  var g=p.slice(),ch=true;
+  while(ch){ch=false;
+    UNITS.forEach(function(u){
+      var e=u.filter(function(j){return !g[j];});
+      if(e.length===1){var used={};u.forEach(function(k){if(g[k])used[g[k]]=1;});
+        for(var d=1;d<=N;d++)if(!used[d]){g[e[0]]=d;break;}ch=true;}
+    });
+  }
+  return g.every(function(v){return v;});
+}
+// 2 csillag: mindig van olyan mező, ahová a kizárások után csak egy jel fér
+function solvableByNaked(p){
+  var g=p.slice(),ch=true;
+  while(ch){ch=false;for(var i=0;i<g.length;i++)if(!g[i]){var cs=candidates(g,i);if(cs.length===1){g[i]=cs[0];ch=true;}}}
+  return g.every(function(v){return v;});
+}
+// 1 csillag: az egység-szabály szerint megoldható (kb. 8 üres mező)
+// 2 csillag: kizárással megoldható, 10 üres mezővel
+// 3 csillag: egyetlen megoldás, minél kevesebb kiindulási jellel (11-12 üres mező)
+function reduce(lv){
+  var p=makeSolution(),order=shuffle(p.map(function(_,i){return i;})),removed=0;
+  for(var k=0;k<order.length;k++){
+    if(lv===2&&removed>=10)break;
+    var i=order[k],v=p[i];p[i]=0;
+    var ok=lv===1?solvableByUnits(p):lv===2?solvableByNaked(p):countSolutions(p.slice(),2)===1;
+    if(ok)removed++;else p[i]=v;
+  }
+  return p;
+}
+function makePuzzle(lv){
+  lv=lv||level;
+  var best=reduce(lv);
+  if(lv===3)for(var t=0;t<25&&best.filter(function(x){return !x;}).length<12;t++){var q=reduce(3);if(q.filter(function(x){return !x;}).length>best.filter(function(x){return !x;}).length)best=q;}
+  return best;
+}
+function sees(i,j){var r=Math.floor(i/N),c=i%N,r2=Math.floor(j/N),c2=j%N;return r===r2||c===c2||(r-r%B===r2-r2%B&&c-c%B===c2-c2%B);}
+function clashCells(i,v){var res=[];for(var j=0;j<N*N;j++)if(j!==i&&grid[j]===v&&sees(i,j))res.push(j);return res;}
+function conflicts(){var bad={};for(var i=0;i<N*N;i++)if(grid[i]&&clashCells(i,grid[i]).length)bad[i]=1;return bad;}
+function say(x){msgEl.textContent=x;}
+function render(){
+  var bad=conflicts(),pr=-1,pc=-1;
+  if(sel>=0){pr=Math.floor(sel/N);pc=sel%N;}
+  boardEl.setAttribute('aria-label',t('boardAria'));
+  boardEl.innerHTML='';
+  for(var i=0;i<N*N;i++)(function(i){
+    var r=Math.floor(i/N),c=i%N,b=document.createElement('button');
+    var peer=sel>=0&&i!==sel&&(r===pr||c===pc||(r-r%B===pr-pr%B&&c-c%B===pc-pc%B));
+    b.className='cell'+(isEmoji()?' emoji':'')+(given[i]?' given':'')+(peer?' peer':'')+(i===sel?' sel':'')+(bad[i]?' bad':'')+(shakeCells.indexOf(i)>=0?' shake':'')+(r===1?' r1':'')+(c===1?' c1':'');
+    var lab=t('cellAria',{r:r+1,c:c+1})+', ';
+    if(grid[i]){b.textContent=sym(grid[i]);lab+=t('value')+' '+sym(grid[i]);}
+    else if(notes[i]&&notes[i].some(function(x){return x;})){
+      var nb=mk('div','notes');
+      for(var k=0;k<N;k++)nb.appendChild(mk('span','',notes[i][k]?sym(k+1):''));
+      b.appendChild(nb);lab+=t('notes')+': '+notes[i].map(function(x,k){return x?sym(k+1):'';}).join(' ');
+    }else lab+=t('empty');
+    b.setAttribute('aria-label',lab);
+    b.addEventListener('click',function(){if(solved)return;sel=i;render();});
+    boardEl.appendChild(b);
+  })(i);
+}
+function isWon(){for(var i=0;i<grid.length;i++)if(!grid[i])return false;return Object.keys(conflicts()).length===0;}
+function dirty(){
+  if(solved)return false;
+  return grid.some(function(v,i){return v&&!given[i];})||notes.some(function(n){return n.some(function(x){return x;});});
+}
+function place(v){
+  if(solved||sel<0||given[sel]){say(t('pickEmpty'));return;}
+  if(noteMode){
+    if(v===0){grid[sel]=0;notes[sel]=[0,0,0,0];render();say('');return;}
+    if(grid[sel]){say(t('noteFilled'));return;}
+    notes[sel][v-1]=notes[sel][v-1]?0:1;render();say('');return;
+  }
+  grid[sel]=v;notes[sel]=[0,0,0,0];
+  var cl=v?clashCells(sel,v):[];
+  shakeCells=cl.length?cl.concat(sel):[];
+  render();say('');
+  if(cl.length){
+    try{if(navigator.vibrate)navigator.vibrate(70);}catch(e){}
+    setTimeout(function(){shakeCells=[];render();},550);
+  }
+  if(isWon())win();
+}
+function win(){
+  solved=true;sel=-1;shakeCells=[];render();
+  var st=$('winSticker'),mg=$('winMsg');st.textContent='';
+  if(rewarded){mg.textContent=t('winAlready');}
+  else if(count>=STK.length){mg.textContent=t('winAll',{max:STK.length});}
+  else{
+    rewarded=true;count++;lsSet('sudokuCount',String(count));updateCollBtn();
+    st.textContent=STK[count-1];mg.textContent=t('reward')+'  '+count+'/'+STK.length;
+  }
+  openM('mwin');
+}
+function start(p,isNew){
+  if(isNew)rewarded=false;
+  puzzle=p;grid=p.slice();notes=p.map(function(){return [0,0,0,0];});given=p.map(function(v){return v>0;});sel=-1;solved=false;shakeCells=[];
+  render();say(t('intro'));
+}
+function applyPending(){if(pendingLevel){level=pendingLevel;lsSet('sudokuLevel',String(level));pendingLevel=null;buildStars();}}
+function newGame(lv){
+  pendingLevel=lv&&lv!==level?lv:null;
+  if(dirty())openM('mconf');else{applyPending();start(makePuzzle(),true);}
+}
+
+// --- Felület ---
+function buildPad(){
+  pad.innerHTML='';
+  for(var d=1;d<=N;d++)(function(d){
+    var b=mk('button','',sym(d));b.setAttribute('aria-label',t('symAria')+': '+sym(d));
+    b.addEventListener('click',function(){place(d);});pad.appendChild(b);
+  })(d);
+  var er=mk('button');er.innerHTML=icon('backspace');er.setAttribute('aria-label',t('erase'));
+  er.addEventListener('click',function(){place(0);});pad.appendChild(er);
+}
+function buildStars(){
+  var box=$('stars');box.innerHTML='';box.setAttribute('aria-label',t('level'));
+  for(var i=1;i<=3;i++)(function(i){
+    var b=mk('button','star'+(i<=level?' on':''));b.innerHTML=icon('star');b.setAttribute('aria-label',t('level')+' '+i);
+    b.addEventListener('click',function(){if(i!==level)newGame(i);});box.appendChild(b);
+  })(i);
+}
+function updateSetBtn(){$('setBtn').textContent=curSyms().join(' ');$('setBtn').setAttribute('aria-label',t('symbols'));}
+function refreshSyms(){buildSetList();buildPad();updateSetBtn();render();}
+function assignCustom(e){
+  var j=customSyms.indexOf(e);
+  if(j>=0&&j!==customSlot)customSyms[j]=customSyms[customSlot];
+  customSyms[customSlot]=e;lsSet('sudokuCustom',JSON.stringify(customSyms));
+  customSlot=(customSlot+1)%4;refreshSyms();
+}
+function buildSetList(){
+  var list=$('setlist');list.innerHTML='';
+  SETS.forEach(function(x){
+    var b=mk('button','opt'+(x.id===setId?' on':''));
+    b.appendChild(mk('span','nm',t('set_'+x.id)));
+    b.appendChild(mk('span','syms',(x.id==='custom'?customSyms:x.sym).join(' ')));
+    b.addEventListener('click',function(){setId=x.id;lsSet('sudokuSet2',setId);refreshSyms();});
+    list.appendChild(b);
+  });
+  if(setId!=='custom')return;
+  list.appendChild(mk('p','hint',t('customHint')));
+  var slots=mk('div','slots');
+  customSyms.forEach(function(e,i){
+    var b=mk('button',i===customSlot?'on':'',e);
+    b.addEventListener('click',function(){customSlot=i;buildSetList();});
+    slots.appendChild(b);
+  });
+  list.appendChild(slots);
+  Object.keys(D.palette).forEach(function(cat){
+    var cn=t('cat_'+cat);list.appendChild(mk('div','cathead',cn==='cat_'+cat?t('set_'+cat):cn));
+    var pal=mk('div','palette');
+    D.palette[cat].forEach(function(e){
+      var b=mk('button',customSyms.indexOf(e)>=0?'used':'',e);
+      b.addEventListener('click',function(){assignCustom(e);});
+      pal.appendChild(b);
+    });
+    list.appendChild(pal);
+  });
+  // Saját jel: beírás vagy beillesztés az alsó mezőbe
+  var row=mk('div','inrow'),inp=document.createElement('input'),ok=mk('button','tonal round');ok.innerHTML=icon('check');
+  inp.placeholder=t('customInput');inp.setAttribute('aria-label',t('customInput'));inp.autocomplete='off';inp.maxLength=40;
+  ok.setAttribute('aria-label','OK');
+  function go(){var e=parseSym(inp.value);if(e)assignCustom(e);}
+  ok.addEventListener('click',go);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go();}});
+  row.appendChild(inp);row.appendChild(ok);list.appendChild(row);
+  var lk=mk('p','hint',t('customLink')+' ');
+  [['Unicode','https://unicode.org/emoji/charts/full-emoji-list.html'],['Emojipedia','https://emojipedia.org']].forEach(function(l,i){
+    var a=mk('a','',l[0]);a.href=l[1];a.target='_blank';a.rel='noopener';
+    if(i)lk.appendChild(document.createTextNode(' · '));lk.appendChild(a);
+  });
+  list.appendChild(lk);
+}
+function buildLangList(q){
+  q=String(q||'').trim().toLowerCase();
+  var list=$('langlist');list.innerHTML='';
+  var keys=LORDER.slice().sort(function(a,b){return (LANGS[a].ename||a).localeCompare(LANGS[b].ename||b,'en');});
+  keys=keys.filter(function(k){var L=LANGS[k];return !q||L.name.toLowerCase().indexOf(q)>=0||(L.ename||'').toLowerCase().indexOf(q)>=0||k.indexOf(q)>=0;});
+  if(!q&&keys.indexOf(lang)>0){keys.splice(keys.indexOf(lang),1);keys.unshift(lang);}
+  keys.forEach(function(k){
+    var b=mk('button','opt'+(k===lang?' on':''));
+    var f=mk('span');f.innerHTML=flagSvg(k);b.appendChild(f);b.appendChild(mk('span','nm',LANGS[k].name));
+    b.addEventListener('click',function(){lang=k;lsSet('sudokuLang',lang);applyLang();closeM();say(t('intro'));});
+    list.appendChild(b);
+  });
+}
+function updateNoteBtn(){
+  var s=t(noteMode?'noteOn':'noteOff');
+  noteBtn.textContent='✏️ '+s;
+  noteBtn.setAttribute('aria-label',t('notesMode')+': '+s);noteBtn.setAttribute('aria-pressed',noteMode);
+  pad.classList.toggle('notemode',noteMode);
+}
+function applyLang(){
+  document.documentElement.lang=lang;document.documentElement.dir=LANGS[lang].rtl?'rtl':'ltr';document.title=t('title');
+  qsa('[data-i18n]').forEach(function(el){el.textContent=t(el.getAttribute('data-i18n'));});
+  qsa('.mclose').forEach(function(b){b.setAttribute('aria-label',t('close'));});
+  $('langsearch').placeholder=t('language')+' …';$('langBtn').innerHTML=flagSvg(lang);$('langBtn').setAttribute('aria-label',t('language'));
+  $('newBtn').setAttribute('aria-label',t('newAria'));collBtn.setAttribute('aria-label',t('collOpen'));
+  buildLangList();buildSetList();buildPad();buildStars();updateSetBtn();updateNoteBtn();updateCollBtn();render();
+}
+
+// --- Gyűjtemény és mentési kód ---
+// A matricák sorrendje rögzített, ezért a gyűjteményt egyetlen szám (hány matricád van) írja le.
+// A kód 3 karakter (0-9, A-Z): szám + ellenőrző érték, összekeverve. Nem titkosítás, csak a találgatást nehezíti.
+var M=36*36*36,MUL=7919,ADD=12345,K=Math.floor(M/(STK.length+1));
+function chk(c){return (c*131+977)%K;}
+function modInv(a,m){var t0=0,t1=1,r0=m,r1=a;while(r1){var q=Math.floor(r0/r1),x=r0-q*r1;r0=r1;r1=x;x=t0-q*t1;t0=t1;t1=x;}return ((t0%m)+m)%m;}
+var INV=modInv(MUL,M);
+function encodeCount(c){
+  var s=(((c*K+chk(c))*MUL+ADD)%M).toString(36).toUpperCase();
+  while(s.length<3)s='0'+s;
+  return s;
+}
+function decodeCount(str){
+  var s=str.toUpperCase().replace(/[^0-9A-Z]/g,'');
+  if(s.length!==3)return -1;
+  var v=(((parseInt(s,36)-ADD)%M+M)%M)*INV%M,c=Math.floor(v/K);
+  return (v%K===chk(c)&&c<=STK.length)?c:-1;
+}
+function updateCollBtn(){collBtn.innerHTML=icon('trophy')+'<span>'+count+'/'+STK.length+'</span>';}
+var zoomTimer=null;
+function hideZoom(){$('zoom').hidden=true;clearTimeout(zoomTimer);}
+function showZoom(i){
+  $('zoomBig').textContent=STK[i];$('zoomNum').textContent='#'+(i+1)+' / '+STK.length;
+  var z=$('zoom');z.hidden=false;
+  var big=$('zoomBig');big.style.animation='none';void big.offsetWidth;big.style.animation='';
+  clearTimeout(zoomTimer);zoomTimer=setTimeout(hideZoom,2500);
+}
+function renderColl(){
+  var g=$('collgrid');g.innerHTML='';
+  STK.forEach(function(a,i){
+    if(i<count){var b=mk('button','ci',a);b.setAttribute('aria-label','#'+(i+1)+' '+a);b.addEventListener('click',function(){showZoom(i);});g.appendChild(b);}
+    else g.appendChild(mk('div','ci q','?'));
+  });
+  $('collcount').textContent=t('collTitle',{n:count,max:STK.length});
+  $('codeout').textContent=encodeCount(count);
+}
+
+// --- Események ---
+$('langBtn').addEventListener('click',function(){$('langsearch').value='';buildLangList();openM('mlang');});
+$('langsearch').addEventListener('input',function(){buildLangList(this.value);});
+$('setBtn').addEventListener('click',function(){buildSetList();openM('mset');});
+$('newBtn').addEventListener('click',function(){newGame(null);});
+$('cRestart').addEventListener('click',function(){pendingLevel=null;closeM();start(puzzle,false);});
+$('cNew').addEventListener('click',function(){closeM();applyPending();start(makePuzzle(),true);});
+$('cCancel').addEventListener('click',function(){pendingLevel=null;closeM();});
+$('zoom').addEventListener('click',hideZoom);
+$('winNew').addEventListener('click',function(){closeM();start(makePuzzle(),true);});
+collBtn.addEventListener('click',function(){renderColl();$('codemsg').textContent='';$('codein').value='';openM('mcoll');});
+noteBtn.addEventListener('click',function(){noteMode=!noteMode;updateNoteBtn();say(noteMode?t('noteMsg'):'');});
+$('codeload').addEventListener('click',function(){
+  var c=decodeCount($('codein').value);
+  if(c<0){$('codemsg').textContent=t('codeBad');return;}
+  if(c>count){var n=c-count;count=c;lsSet('sudokuCount',String(count));updateCollBtn();renderColl();$('codemsg').textContent=t('codeLoaded',{n:n});}
+  else $('codemsg').textContent=t('codeNone');
+  $('codein').value='';
+});
+document.addEventListener('keydown',function(e){
+  if(!$('zoom').hidden){if(e.key==='Escape')hideZoom();return;}
+  if(anyOpen()){if(e.key==='Escape'){pendingLevel=null;closeM();}return;}
+  if(e.key>='1'&&e.key<='4')place(+e.key);
+  else if(e.key==='Backspace'||e.key==='Delete'||e.key==='0')place(0);
+});
+
+qsa('[data-icon]').forEach(function(el){el.innerHTML=icon(el.getAttribute('data-icon'));});
+start(makePuzzle(),true);
+applyLang();
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+
+})();
+</script>
+</body>
+</html>
