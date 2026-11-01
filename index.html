@@ -38,7 +38,9 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outlin
 #stars{display:flex}
 .star{width:34px;height:48px;opacity:.3;border-radius:12px;color:#f5b301}
 .star.on{opacity:1}
-.flag{display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.flag{display:block;width:32px;height:24px;object-fit:cover;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.flag.globe{display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:none}
+.flag.fb{display:flex;align-items:center;justify-content:center;background:var(--surface-container);font-size:.7rem;font-weight:700}
 .msg{min-height:1.3em;margin:0;color:var(--on-surface-variant)}
 #board,#pad,#collgrid,.palette,.slots,.syms,#stars,.sub{direction:ltr}
 #board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));background:var(--cell);border:3px solid var(--on-surface);border-radius:20px;overflow:hidden;aspect-ratio:1}
@@ -56,7 +58,10 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outlin
 #pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 #pad button{height:56px;border-radius:16px;font-size:1.5rem;font-weight:500;background:var(--secondary-container);color:var(--on-secondary-container)}
 #pad.notemode button{outline:2px dashed var(--primary);outline-offset:-4px}
-#notebtn{height:48px;border-radius:24px;border:1px solid var(--outline);font-weight:500}
+#bottom{display:grid;grid-template-columns:1fr 4fr;gap:8px}
+#undoBtn{height:56px;border-radius:16px;background:var(--secondary-container);color:var(--on-secondary-container)}
+#undoBtn:disabled{opacity:.35;cursor:default}
+#notebtn{height:56px;border-radius:28px;border:1px solid var(--outline);font-weight:500}
 #notebtn[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
 .modal{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
 .modal[hidden]{display:none}
@@ -64,6 +69,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outlin
 .mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;font-size:1.3rem}
 .mclose{width:40px;height:40px;border-radius:20px;flex:none}
 .optlist{display:flex;flex-direction:column;gap:8px}
+#langlist .sep{grid-column:1/-1;height:1px;background:var(--outline-variant);margin:4px 0}
 #langlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
 .opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:16px;border:1px solid var(--outline-variant);width:100%;text-align:start;justify-content:flex-start}
 .opt.on{background:var(--secondary-container);border:2px solid var(--primary)}
@@ -120,13 +126,14 @@ button.ci{border:0;padding:0;cursor:pointer;color:inherit}
   <p class="msg" id="msg" aria-live="polite"></p>
   <div id="board" role="grid"></div>
   <div id="pad"></div>
-  <button id="notebtn" aria-pressed="false"></button>
+  <div id="bottom"><button id="undoBtn" data-icon="undo"></button><button id="notebtn" aria-pressed="false"></button></div>
 </main>
 
 <div class="modal" id="mlang" hidden role="dialog" aria-modal="true"><div class="mbox">
   <div class="mhead"><strong data-i18n="language"></strong><button class="mclose tonal" data-icon="close"></button></div>
   <input id="langsearch" type="search" autocomplete="off" spellcheck="false" style="width:100%;margin-bottom:10px">
   <div id="langlist" class="optlist"></div>
+  <p class="hint" style="text-align:center"><a href="licenses.html" target="_blank" rel="noopener">flag-icons · MIT</a></p>
 </div></div>
 
 <div class="modal" id="mset" hidden role="dialog" aria-modal="true"><div class="mbox">
@@ -182,9 +189,12 @@ var ICONS={add:'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
  close:'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
  replay:'M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z',
  backspace:'M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z',
+ undo:'M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z',
  check:'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
  star:'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
  trophy:'M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.95V19H7v2h10v-2h-4v-3.11c1.63-.32 2.98-1.45 3.61-2.95C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z'};
+// Törlés: piros, rajzolt X
+var ERASE_X='<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="#e5484d" stroke-width="3.4" stroke-linecap="round"/></svg>';
 function icon(n){return '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="'+ICONS[n]+'"/></svg>';}
 
 // --- Nyelv: mentett választás, különben az eszköz nyelve, különben angol ---
@@ -200,9 +210,40 @@ function pickLang(tags){
 }
 if(!LANGS[lang])lang=pickLang(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en']);
 function t(k,p){var s=(LANGS[lang]&&LANGS[lang][k])||(LANGS.en&&LANGS.en[k])||k;if(p)for(var x in p)s=s.replace('{'+x+'}',p[x]);return s;}
-// A zászlók SVG-ként vannak rajzolva, mert egyes gépeken a böngésző nem jeleníti meg a zászló-emojikat.
-function flagInner(k){var f=LANGS[k].flag||'';return f.charAt(0)==='@'?flagInner(f.slice(1)):f;}
-function flagSvg(k){return '<svg class="flag" viewBox="0 0 60 40" width="32" height="21" aria-hidden="true">'+flagInner(k)+'</svg>';}
+// Zászlók: flag-icons (MIT, github.com/lipis/flag-icons), 4x3-as SVG. Forrás sorrendben: helyi flags/ mappa, majd CDN, végül kódjelölés.
+var FLAG_LOCAL='flags/',FLAG_CDN='';   // a zászlók a saját flags/ mappából jönnek; CDN: 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/flags/4x3/'
+// A készülék területi beállítása (pl. es-UY) szerint a nyelvhez az adott ország zászlaja jelenik meg.
+var REGION={};
+(function(){
+  var tags=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||''];
+  tags.forEach(function(tg){
+    var p=String(tg).split('-'),b=p[0].toLowerCase();b=ALIAS[b]||b;
+    var r='';for(var i=1;i<p.length;i++)if(/^[A-Za-z]{2}$/.test(p[i])){r=p[i].toLowerCase();break;}
+    if(b==='zh'&&/^(tw|hk|mo)$/.test(r))r='';
+    if(r&&LANGS[b]&&!REGION[b])REGION[b]=r;
+  });
+})();
+function flagCodes(k){
+  var d=LANGS[k].flag||'',c=[];
+  if(!d||d==='globe')return c;
+  if(d.indexOf('-')<0&&REGION[k]&&REGION[k]!==d)c.push(REGION[k]);   // regionális zászlót (pl. es-ct) nem írunk felül
+  c.push(d);return c;
+}
+function flagEl(k){
+  var codes=flagCodes(k);
+  if(!codes.length)return mk('span','flag globe','🌐');
+  var urls=[];
+  codes.forEach(function(c){urls.push(FLAG_LOCAL+c+'.svg');if(FLAG_CDN)urls.push(FLAG_CDN+c+'.svg');});
+  var im=document.createElement('img'),i=0;
+  im.className='flag';im.width=32;im.height=24;im.alt='';
+  im.addEventListener('error',function(){
+    i++;
+    if(i<urls.length)im.src=urls[i];
+    else if(im.parentNode)im.parentNode.replaceChild(mk('span','flag fb',codes[codes.length-1].toUpperCase().slice(0,4)),im);
+  });
+  im.src=urls[0];
+  return im;
+}
 
 // --- Jelkészletek az emojik.js adataiból ---
 var SETS=Object.keys(D.sets).map(function(id){return {id:id,sym:D.sets[id]};});
@@ -232,7 +273,7 @@ function parseSym(s){
   return firstG(s);
 }
 
-var grid=[],given=[],notes=[],puzzle=[],noteMode=false,sel=-1,solved=false,rewarded=false,shakeCells=[],pendingLevel=null;
+var grid=[],given=[],notes=[],puzzle=[],noteMode=false,sel=-1,solved=false,rewarded=false,shakeCells=[],pendingLevel=null,history=[];
 var count=parseInt(lsGet('sudokuCount'),10)||0;if(count<0||count>STK.length)count=0;
 var level=parseInt(lsGet('sudokuLevel'),10);if(!(level>=1&&level<=3))level=2;
 var boardEl=$('board'),msgEl=$('msg'),pad=$('pad'),noteBtn=$('notebtn'),collBtn=$('collBtn');
@@ -336,19 +377,43 @@ function render(){
     b.addEventListener('click',function(){if(solved)return;sel=i;render();});
     boardEl.appendChild(b);
   })(i);
+  updateUndo();
 }
 function isWon(){for(var i=0;i<grid.length;i++)if(!grid[i])return false;return Object.keys(conflicts()).length===0;}
 function dirty(){
   if(solved)return false;
   return grid.some(function(v,i){return v&&!given[i];})||notes.some(function(n){return n.some(function(x){return x;});});
 }
+// --- Visszavonás és a játékállás mentése ---
+function updateUndo(){$('undoBtn').disabled=solved||!history.length;}
+function pushHist(){history.push({g:grid.slice(),n:notes.map(function(a){return a.slice();})});if(history.length>60)history.shift();}
+function undo(){
+  if(solved||!history.length)return;
+  var h=history.pop();grid=h.g;notes=h.n;shakeCells=[];render();say('');saveGame();
+}
+function saveGame(){lsSet('sudokuGame',JSON.stringify({v:1,p:puzzle,g:grid,n:notes,h:history,r:rewarded}));}
+function arr16(a){return Array.isArray(a)&&a.length===16&&a.every(function(x){return x===0||x===1||x===2||x===3||x===4;});}
+function loadGame(){
+  try{
+    var o=JSON.parse(lsGet('sudokuGame'));
+    if(!o||o.v!==1||!arr16(o.p)||!arr16(o.g)||!Array.isArray(o.h)||o.h.length>60)return null;
+    if(!Array.isArray(o.n)||o.n.length!==16||!o.n.every(function(a){return Array.isArray(a)&&a.length===4;}))return null;
+    if(!o.p.every(function(v,i){return !v||o.g[i]===v;}))return null;
+    if(!o.h.every(function(h){return h&&arr16(h.g)&&Array.isArray(h.n)&&h.n.length===16;}))return null;
+    return o;
+  }catch(e){return null;}
+}
 function place(v){
   if(solved||sel<0||given[sel]){say(t('pickEmpty'));return;}
+  var hasNotes=notes[sel].some(function(x){return x;});
   if(noteMode){
-    if(v===0){grid[sel]=0;notes[sel]=[0,0,0,0];render();say('');return;}
+    if(v===0){if(!grid[sel]&&!hasNotes)return;pushHist();grid[sel]=0;notes[sel]=[0,0,0,0];render();say('');saveGame();return;}
     if(grid[sel]){say(t('noteFilled'));return;}
-    notes[sel][v-1]=notes[sel][v-1]?0:1;render();say('');return;
+    pushHist();notes[sel][v-1]=notes[sel][v-1]?0:1;render();say('');saveGame();return;
   }
+  if(v===0&&!grid[sel]&&!hasNotes)return;
+  if(v&&grid[sel]===v&&!hasNotes)return;
+  pushHist();
   grid[sel]=v;notes[sel]=[0,0,0,0];
   var cl=v?clashCells(sel,v):[];
   shakeCells=cl.length?cl.concat(sel):[];
@@ -357,10 +422,10 @@ function place(v){
     try{if(navigator.vibrate)navigator.vibrate(70);}catch(e){}
     setTimeout(function(){shakeCells=[];render();},550);
   }
-  if(isWon())win();
+  if(isWon())win();else saveGame();
 }
 function win(){
-  solved=true;sel=-1;shakeCells=[];render();
+  solved=true;sel=-1;shakeCells=[];history=[];lsSet('sudokuGame','');render();
   var st=$('winSticker'),mg=$('winMsg');st.textContent='';
   if(rewarded){mg.textContent=t('winAlready');}
   else if(count>=STK.length){mg.textContent=t('winAll',{max:STK.length});}
@@ -372,8 +437,8 @@ function win(){
 }
 function start(p,isNew){
   if(isNew)rewarded=false;
-  puzzle=p;grid=p.slice();notes=p.map(function(){return [0,0,0,0];});given=p.map(function(v){return v>0;});sel=-1;solved=false;shakeCells=[];
-  render();say(t('intro'));
+  puzzle=p;grid=p.slice();notes=p.map(function(){return [0,0,0,0];});given=p.map(function(v){return v>0;});sel=-1;solved=false;shakeCells=[];history=[];
+  render();say(t('intro'));saveGame();
 }
 function applyPending(){if(pendingLevel){level=pendingLevel;lsSet('sudokuLevel',String(level));pendingLevel=null;buildStars();}}
 function newGame(lv){
@@ -388,7 +453,7 @@ function buildPad(){
     var b=mk('button','',sym(d));b.setAttribute('aria-label',t('symAria')+': '+sym(d));
     b.addEventListener('click',function(){place(d);});pad.appendChild(b);
   })(d);
-  var er=mk('button');er.innerHTML=icon('backspace');er.setAttribute('aria-label',t('erase'));
+  var er=mk('button');er.innerHTML=ERASE_X;er.setAttribute('aria-label',t('erase'));
   er.addEventListener('click',function(){place(0);});pad.appendChild(er);
 }
 function buildStars(){
@@ -452,12 +517,13 @@ function buildSetList(){
 function buildLangList(q){
   q=String(q||'').trim().toLowerCase();
   var list=$('langlist');list.innerHTML='';
-  var keys=LORDER.slice().sort(function(a,b){return (LANGS[a].ename||a).localeCompare(LANGS[b].ename||b,'en');});
-  keys=keys.filter(function(k){var L=LANGS[k];return !q||L.name.toLowerCase().indexOf(q)>=0||(L.ename||'').toLowerCase().indexOf(q)>=0||k.indexOf(q)>=0;});
-  if(!q&&keys.indexOf(lang)>0){keys.splice(keys.indexOf(lang),1);keys.unshift(lang);}
+  var PIN=['en','es','zh','ar','hi','pt-br','fr','it','de','hu'].filter(function(k){return LANGS[k];});
+  var rest=LORDER.filter(function(k){return PIN.indexOf(k)<0;}).sort(function(a,b){return (LANGS[a].ename||a).localeCompare(LANGS[b].ename||b,'en');});
+  var keys=PIN.concat(rest).filter(function(k){var L=LANGS[k];return !q||L.name.toLowerCase().indexOf(q)>=0||(L.ename||'').toLowerCase().indexOf(q)>=0||k.indexOf(q)>=0;});
   keys.forEach(function(k){
+    if(!q&&k===rest[0])list.appendChild(mk('div','sep'));
     var b=mk('button','opt'+(k===lang?' on':''));
-    var f=mk('span');f.innerHTML=flagSvg(k);b.appendChild(f);b.appendChild(mk('span','nm',LANGS[k].name));
+    b.appendChild(flagEl(k));b.appendChild(mk('span','nm',LANGS[k].name));
     b.addEventListener('click',function(){lang=k;lsSet('sudokuLang',lang);applyLang();closeM();say(t('intro'));});
     list.appendChild(b);
   });
@@ -472,7 +538,7 @@ function applyLang(){
   document.documentElement.lang=lang;document.documentElement.dir=LANGS[lang].rtl?'rtl':'ltr';document.title=t('title');
   qsa('[data-i18n]').forEach(function(el){el.textContent=t(el.getAttribute('data-i18n'));});
   qsa('.mclose').forEach(function(b){b.setAttribute('aria-label',t('close'));});
-  $('langsearch').placeholder=t('language')+' …';$('langBtn').innerHTML=flagSvg(lang);$('langBtn').setAttribute('aria-label',t('language'));
+  $('langsearch').placeholder=t('language')+' …';$('langBtn').innerHTML='';$('langBtn').appendChild(flagEl(lang));$('undoBtn').setAttribute('aria-label',t('undo'));$('langBtn').setAttribute('aria-label',t('language'));
   $('newBtn').setAttribute('aria-label',t('newAria'));collBtn.setAttribute('aria-label',t('collOpen'));
   buildLangList();buildSetList();buildPad();buildStars();updateSetBtn();updateNoteBtn();updateCollBtn();render();
 }
@@ -525,6 +591,7 @@ $('cCancel').addEventListener('click',function(){pendingLevel=null;closeM();});
 $('zoom').addEventListener('click',hideZoom);
 $('winNew').addEventListener('click',function(){closeM();start(makePuzzle(),true);});
 collBtn.addEventListener('click',function(){renderColl();$('codemsg').textContent='';$('codein').value='';openM('mcoll');});
+$('undoBtn').addEventListener('click',undo);
 noteBtn.addEventListener('click',function(){noteMode=!noteMode;updateNoteBtn();say(noteMode?t('noteMsg'):'');});
 $('codeload').addEventListener('click',function(){
   var c=decodeCount($('codein').value);
@@ -541,7 +608,9 @@ document.addEventListener('keydown',function(e){
 });
 
 qsa('[data-icon]').forEach(function(el){el.innerHTML=icon(el.getAttribute('data-icon'));});
-start(makePuzzle(),true);
+var sg=loadGame();
+if(sg){puzzle=sg.p;grid=sg.g;notes=sg.n;history=sg.h;rewarded=!!sg.r;given=sg.p.map(function(v){return v>0;});sel=-1;solved=false;shakeCells=[];render();say(t('intro'));}
+else start(makePuzzle(),true);
 applyLang();
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 

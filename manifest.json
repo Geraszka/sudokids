@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "SudoKids",
+  "short_name": "SudoKids",
+  "description": "A 4x4 sudoku for kids with stickers to collect.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5fafb",
+  "theme_color": "#006874",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

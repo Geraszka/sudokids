@@ -17,7 +17,7 @@ window.EMOJI_DATA={
 
   // A jelválasztóban kínált alapkészletek (mindegyikben pontosan 4 jel). A név a lang.js-ből jön ("set_" + azonosító).
   sets:{
-    animals:['🐶','🐱','🐷','🐰'],
+    animals:['🐶','🐱','🐺','🐰'],
     fruits:['🍎','🍌','🍇','🥝'],
     vehicles:['🚗','🚲','✈️','🚜'],
     shapes:['🟢','🟦','❤️','⭐']
