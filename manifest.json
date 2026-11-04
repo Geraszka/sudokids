@@ -1,17 +1,36 @@
 {
-  "id": "./",
-  "name": "SudoKids",
+  "id": "com.geraszka.sudokids",
+  "name": "SudoKids - 4x4 Sudoku",
   "short_name": "SudoKids",
-  "description": "A 4x4 sudoku for kids with stickers to collect.",
+  "description": "A fun and educational 4x4 Sudoku puzzle game for kids! Play with numbers or customize the game using unique sticker icons. 100% free, safe, and available in multiple languages.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f5fafb",
-  "theme_color": "#006874",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "education",
+    "games"
   ]
 }
