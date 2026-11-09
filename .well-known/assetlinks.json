@@ -1,0 +1,17 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.geraszka.sudokids",
+      "sha256_cert_fingerprints": [
+        "9A:AF:2E:62:B6:3F:A3:F7:1C:C5:E0:32:B8:EE:17:B0:E0:34:AD:10:C8:6C:4F:99:01:A6:4B:87:F1:E8:84:6C",
+        "C3:3A:35:2F:A7:00:E9:4A:B1:48:C7:17:33:5D:A5:B9:48:F2:1D:95:A0:C4:0F:6A:6E:CD:85:E3:7D:30:49:05",
+        "DD:A0:C3:AF:8C:F4:5A:E7:87:5B:13:62:DE:07:48:CE:35:0B:95:62:3A:50:FE:7A:8B:62:E0:30:11:0A:EE:75"
+      ]
+    }
+  }
+]
