@@ -75,20 +75,31 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outlin
 .opt.on{background:var(--secondary-container);border:2px solid var(--primary)}
 .opt .nm{font-weight:500}
 .opt .syms{display:flex;gap:10px;font-size:1.6rem;margin-inline-start:auto}
-.hint{margin:12px 0 0;font-size:.9rem;color:var(--on-surface-variant)}
+.hint{margin:8px 0 0;font-size:.9rem;color:var(--on-surface-variant)}
 .hint a{color:var(--primary);font-weight:500}
 .slots{display:flex;gap:8px;margin-top:8px}
-.slots button{flex:1;height:52px;font-size:1.6rem;border-radius:14px;border:1px solid var(--outline-variant)}
+.slots button{flex:1;height:46px;font-size:1.5rem;border-radius:14px;border:1px solid var(--outline-variant)}
 .slots button.on{border:2px solid var(--primary);background:var(--primary-container)}
 .inrow{display:flex;gap:8px;margin-top:10px}
 input{flex:1;min-width:0;font:inherit;font-size:1rem;padding:12px 14px;border-radius:12px;border:1px solid var(--outline);background:var(--surface);color:var(--on-surface)}
-.cathead{margin:12px 0 4px;font-size:.85rem;color:var(--on-surface-variant);font-weight:500}
-.palette{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
-.palette button{font-size:1.2rem;height:34px;border-radius:8px;border:1px solid var(--outline-variant)}
-.palette button.used{border:2px solid var(--primary);background:var(--primary-container)}
+.cathead{display:flex;align-items:center;justify-content:space-between;margin:8px 0 2px;min-height:26px;font-size:.82rem;color:var(--on-surface-variant);font-weight:500}
+.palette{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px}
+.palette button{font-size:1.1rem;height:30px;border-radius:7px;border:1px solid transparent}
+.palette button.used{border:1.5px solid var(--primary);background:var(--primary-container)}
 .aboutlink{font-size:.85rem;padding:8px 14px;border-radius:18px;color:var(--on-surface-variant)}
 .mbox h3{margin:16px 0 4px;font-size:1rem}
 .mbox pre{white-space:pre-wrap;font-size:.72rem;line-height:1.4;background:var(--surface-container);padding:10px;border-radius:12px;margin:6px 0}
+.optrow{position:relative}.optrow .opt{padding-inline-end:52px}
+.rnd{position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;min-height:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface-container);color:var(--on-surface-variant);z-index:1}
+.rnd svg{width:16px;height:16px}
+.rnd:hover{background:var(--outline-variant)}
+.morebtn{display:inline-flex;align-items:center;gap:2px;padding:0 8px 0 10px;height:24px;min-height:24px;border-radius:12px;font-size:.78rem;font-weight:500}
+.morebtn svg{width:18px;height:18px}
+.hbtns{display:flex;gap:8px}.hbtn{width:40px;height:40px;border-radius:20px;flex:none}
+.hbtn:disabled{opacity:.35;cursor:default}
+#show{z-index:30;background:rgba(0,0,0,.72)}
+#show .ctrl{display:flex;gap:14px;margin-top:22px}
+#show .showclose{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px}
 .confbtns{display:flex;gap:8px}
 .confbtns button{flex:1;flex-direction:column;gap:6px;padding:14px 4px;border-radius:16px;background:var(--secondary-container);color:var(--on-secondary-container);font-size:.85rem;font-weight:500}
 .confbtns .ic svg{width:28px;height:28px}
@@ -180,7 +191,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 </div></div>
 
 <div class="modal" id="mcoll" hidden role="dialog" aria-modal="true"><div class="mbox">
-  <div class="mhead"><strong id="collcount"></strong><button class="mclose tonal" data-icon="close"></button></div>
+  <div class="mhead"><strong id="collcount"></strong><span class="hbtns"><button id="playBtn" class="hbtn tonal" data-icon="play"></button><button class="mclose tonal" data-icon="close"></button></span></div>
   <div id="collgrid"></div>
   <div class="codebox">
     <div class="codecols">
@@ -192,7 +203,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   </div>
 </div></div>
 
-<div id="zoom" class="zoom" hidden><div class="big" id="zoomBig"></div><div class="num" id="zoomNum"></div></div>
+<div id="show" class="zoom" hidden>
+  <button id="showClose" class="showclose hbtn tonal" data-icon="close"></button>
+  <div class="big" id="showBig"></div><div class="num" id="showNum"></div>
+  <div class="ctrl"><button id="showPrev" class="filled round" data-icon="chevron_left"></button><button id="showToggle" class="filled round"></button><button id="showNext" class="filled round" data-icon="chevron_right"></button></div>
+</div>
 
 <script src="lang.js"></script>
 <script src="emojik.js"></script>
@@ -211,6 +226,13 @@ var ICONS={add:'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z',
  replay:'M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z',
  backspace:'M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z',
  undo:'M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z',
+ play:'M8 5v14l11-7z',
+ pause:'M6 19h4V5H6v14zm8-14v14h4V5h-4z',
+ shuffle:'M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z',
+ expand_more:'M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z',
+ expand_less:'M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z',
+ chevron_left:'M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z',
+ chevron_right:'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z',
  check:'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
  star:'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z',
  trophy:'M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.95V19H7v2h10v-2h-4v-3.11c1.63-.32 2.98-1.45 3.61-2.95C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z'};
@@ -269,6 +291,13 @@ function flagEl(k){
 // --- Jelkészletek az emojik.js adataiból ---
 var SETS=Object.keys(D.sets).map(function(id){return {id:id,sym:D.sets[id]};});
 SETS.push({id:'num',sym:['1','2','3','4']},{id:'custom'});
+var expandedCats={};
+(function(){   // a véletlenül válogatott készletek megjegyzése
+  try{
+    var o=JSON.parse(lsGet('sudokuSetsOver')||'{}');
+    SETS.forEach(function(x){var v=o[x.id];if(Array.isArray(v)&&v.length===4&&v.every(function(c){return typeof c==='string'&&c&&c.length<=16;}))x.sym=v;});
+  }catch(e){}
+})();
 var setId=lsGet('sudokuSet2'),customSlot=0,customSyms=D.customDefault.slice(0,4);
 if(!SETS.some(function(x){return x.id===setId;}))setId=SETS[0].id;
 try{var cs=JSON.parse(lsGet('sudokuCustom'));
@@ -486,6 +515,14 @@ function buildStars(){
 }
 function updateSetBtn(){$('setBtn').textContent=curSyms().join(' ');$('setBtn').setAttribute('aria-label',t('symbols'));}
 function refreshSyms(){buildSetList();buildPad();updateSetBtn();render();}
+function randomizeSet(id){
+  var pool=D.palette[id];if(!pool||pool.length<4)return;
+  var pick=shuffle(pool.slice()).slice(0,4);
+  SETS.forEach(function(x){if(x.id===id)x.sym=pick;});
+  var o={};try{o=JSON.parse(lsGet('sudokuSetsOver')||'{}');}catch(e){}
+  o[id]=pick;lsSet('sudokuSetsOver',JSON.stringify(o));
+  setId=id;lsSet('sudokuSet2',setId);refreshSyms();
+}
 function assignCustom(e){
   var j=customSyms.indexOf(e);
   if(j>=0&&j!==customSlot)customSyms[j]=customSyms[customSlot];
@@ -499,7 +536,14 @@ function buildSetList(){
     b.appendChild(mk('span','nm',t('set_'+x.id)));
     b.appendChild(mk('span','syms',(x.id==='custom'?customSyms:x.sym).join(' ')));
     b.addEventListener('click',function(){setId=x.id;lsSet('sudokuSet2',setId);refreshSyms();});
-    list.appendChild(b);
+    var pool=D.palette[x.id],canRnd=x.id!=='num'&&x.id!=='custom'&&pool&&pool.length>=4;
+    var w=mk('div','optrow');w.appendChild(b);
+    if(canRnd){
+      var rb=mk('button','rnd');rb.innerHTML=icon('shuffle');rb.setAttribute('aria-label',t('random'));
+      rb.addEventListener('click',function(){randomizeSet(x.id);});
+      w.appendChild(rb);
+    }
+    list.appendChild(w);
   });
   if(setId!=='custom')return;
   list.appendChild(mk('p','hint',t('customHint')));
@@ -511,9 +555,18 @@ function buildSetList(){
   });
   list.appendChild(slots);
   Object.keys(D.palette).forEach(function(cat){
-    var cn=t('cat_'+cat);list.appendChild(mk('div','cathead',cn==='cat_'+cat?t('set_'+cat):cn));
+    var cn=t('cat_'+cat),all=D.palette[cat],open=!!expandedCats[cat],pc=(D.preview&&D.preview[cat])||20;
+    var head=mk('div','cathead');head.appendChild(mk('span','',cn==='cat_'+cat?t('set_'+cat):cn));
+    if(all.length>pc){
+      var mb=mk('button','morebtn tonal');
+      mb.innerHTML=(open?'':'<span>+'+(all.length-pc)+'</span>')+icon(open?'expand_less':'expand_more');
+      mb.setAttribute('aria-label',(open?'−':'+')+(all.length-pc));
+      mb.addEventListener('click',function(){expandedCats[cat]=!open;buildSetList();});
+      head.appendChild(mb);
+    }
+    list.appendChild(head);
     var pal=mk('div','palette');
-    D.palette[cat].forEach(function(e){
+    (open?all:all.slice(0,pc)).forEach(function(e){
       var b=mk('button',customSyms.indexOf(e)>=0?'used':'',e);
       b.addEventListener('click',function(){assignCustom(e);});
       pal.appendChild(b);
@@ -529,7 +582,7 @@ function buildSetList(){
   inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();go();}});
   row.appendChild(inp);row.appendChild(ok);list.appendChild(row);
   var lk=mk('p','hint',t('customLink')+' ');
-  [['Unicode','https://unicode.org/emoji/charts/full-emoji-list.html'],['Emojipedia','https://emojipedia.org']].forEach(function(l,i){
+  [['Unicode','https://unicode.org/emoji/charts/full-emoji-list.html']].forEach(function(l,i){
     var a=mk('a','',l[0]);a.href=l[1];a.target='_blank';a.rel='noopener';
     if(i)lk.appendChild(document.createTextNode(' · '));lk.appendChild(a);
   });
@@ -583,22 +636,31 @@ function decodeCount(str){
   return (v%K===chk(c)&&c<=STK.length)?c:-1;
 }
 function updateCollBtn(){collBtn.innerHTML=icon('trophy')+'<span>'+count+'/'+STK.length+'</span>';}
-var zoomTimer=null;
-function hideZoom(){$('zoom').hidden=true;clearTimeout(zoomTimer);}
-function showZoom(i){
-  $('zoomBig').textContent=STK[i];$('zoomNum').textContent='#'+(i+1)+' / '+STK.length;
-  var z=$('zoom');z.hidden=false;
-  var big=$('zoomBig');big.style.animation='none';void big.offsetWidth;big.style.animation='';
-  clearTimeout(zoomTimer);zoomTimer=setTimeout(hideZoom,2500);
+var showTimer=null,showIdx=0,showPlaying=true;
+function showSlide(){
+  if(!count)return;
+  $('showBig').textContent=STK[showIdx];$('showNum').textContent='#'+(showIdx+1)+' / '+count;
+  var b=$('showBig');b.style.animation='none';void b.offsetWidth;b.style.animation='';
 }
+function showSchedule(){clearInterval(showTimer);if(showPlaying)showTimer=setInterval(function(){showIdx=(showIdx+1)%count;showSlide();},3000);}
+function showButtons(){
+  $('showToggle').innerHTML=icon(showPlaying?'pause':'play');
+  $('showToggle').setAttribute('aria-label',t(showPlaying?'pause':'play'));
+  $('showPrev').setAttribute('aria-label',t('prev'));$('showNext').setAttribute('aria-label',t('next'));
+}
+function openShow(i,auto){if(!count)return;showIdx=i;showPlaying=!!auto;$('show').hidden=false;showButtons();showSlide();showSchedule();}
+function startShow(){openShow(0,true);}
+function stopShow(){clearInterval(showTimer);$('show').hidden=true;}
+function showStep(d){if(!count)return;showIdx=(showIdx+d+count)%count;showSlide();showSchedule();}
 function renderColl(){
   var g=$('collgrid');g.innerHTML='';
   STK.forEach(function(a,i){
-    if(i<count){var b=mk('button','ci',a);b.setAttribute('aria-label','#'+(i+1)+' '+a);b.addEventListener('click',function(){showZoom(i);});g.appendChild(b);}
+    if(i<count){var b=mk('button','ci',a);b.setAttribute('aria-label','#'+(i+1)+' '+a);b.addEventListener('click',function(){openShow(i,false);});g.appendChild(b);}
     else g.appendChild(mk('div','ci q','?'));
   });
   $('collcount').textContent=t('collTitle',{n:count,max:STK.length});
   $('codeout').textContent=encodeCount(count);
+  $('playBtn').disabled=!count;
 }
 
 // --- Események ---
@@ -609,7 +671,12 @@ $('newBtn').addEventListener('click',function(){newGame(null);});
 $('cRestart').addEventListener('click',function(){pendingLevel=null;closeM();start(puzzle,false);});
 $('cNew').addEventListener('click',function(){closeM();applyPending();start(makePuzzle(),true);});
 $('cCancel').addEventListener('click',function(){pendingLevel=null;closeM();});
-$('zoom').addEventListener('click',hideZoom);
+$('playBtn').addEventListener('click',startShow);
+$('showClose').addEventListener('click',stopShow);
+$('show').addEventListener('click',function(e){if(e.target===$('show'))stopShow();});
+$('showPrev').addEventListener('click',function(){showStep(-1);});
+$('showNext').addEventListener('click',function(){showStep(1);});
+$('showToggle').addEventListener('click',function(){showPlaying=!showPlaying;showButtons();showSchedule();});
 $('aboutBtn').addEventListener('click',function(){openM('mabout');});
 $('winNew').addEventListener('click',function(){closeM();start(makePuzzle(),true);});
 collBtn.addEventListener('click',function(){renderColl();$('codemsg').textContent='';$('codein').value='';openM('mcoll');});
@@ -623,7 +690,11 @@ $('codeload').addEventListener('click',function(){
   $('codein').value='';
 });
 document.addEventListener('keydown',function(e){
-  if(!$('zoom').hidden){if(e.key==='Escape')hideZoom();return;}
+  if(!$('show').hidden){
+    if(e.key==='Escape')stopShow();else if(e.key==='ArrowLeft')showStep(-1);else if(e.key==='ArrowRight')showStep(1);
+    else if(e.key===' '){showPlaying=!showPlaying;showButtons();showSchedule();}
+    return;
+  }
   if(anyOpen()){if(e.key==='Escape'){pendingLevel=null;closeM();}return;}
   if(e.key>='1'&&e.key<='4')place(+e.key);
   else if(e.key==='Backspace'||e.key==='Delete'||e.key==='0')place(0);

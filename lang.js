@@ -1,5 +1,6 @@
 // SudoKids – az összes nyelv egy helyen. Új nyelv: másolj le egy blokkot, és írd át.
-// flag: a flag-icons kódja (a zászló a flags/<kód>.svg fájlból vagy a CDN-ről jön), "globe" = földgömb. review:true = anyanyelvi átnézést érdemel.
+// flag: a flag-icons kódja (a zászló a flags/<kód>.svg fájlból jön), "globe" = földgömb. review:true = anyanyelvi átnézést érdemel.
+// Ami hiányzik egy nyelvből, az angolra esik vissza.
 window.LANGS={
  "hu": {
   "flag": "hu",
@@ -51,7 +52,13 @@ window.LANGS={
   "erase": "Törlés",
   "symAria": "Jel",
   "boardAria": "Sudoku tábla",
-  "undo": "Vissza"
+  "undo": "Vissza",
+  "cat_food": "Ételek",
+  "random": "Véletlen válogatás",
+  "play": "Lejátszás",
+  "pause": "Szünet",
+  "prev": "Előző",
+  "next": "Következő"
  },
  "en": {
   "flag": "gb",
@@ -103,7 +110,13 @@ window.LANGS={
   "erase": "Erase",
   "symAria": "Symbol",
   "boardAria": "Sudoku board",
-  "undo": "Undo"
+  "undo": "Undo",
+  "cat_food": "Food",
+  "random": "Random pick",
+  "play": "Play",
+  "pause": "Pause",
+  "prev": "Previous",
+  "next": "Next"
  },
  "es": {
   "flag": "es",
@@ -155,7 +168,13 @@ window.LANGS={
   "erase": "Borrar",
   "symAria": "Símbolo",
   "boardAria": "Tablero de sudoku",
-  "undo": "Deshacer"
+  "undo": "Deshacer",
+  "cat_food": "Comida",
+  "random": "Selección al azar",
+  "play": "Reproducir",
+  "pause": "Pausa",
+  "prev": "Anterior",
+  "next": "Siguiente"
  },
  "fr": {
   "flag": "fr",
@@ -207,7 +226,8 @@ window.LANGS={
   "erase": "Effacer",
   "symAria": "Symbole",
   "boardAria": "Grille de sudoku",
-  "undo": "Annuler"
+  "undo": "Annuler",
+  "cat_food": "Nourriture"
  },
  "de": {
   "flag": "de",
@@ -259,7 +279,8 @@ window.LANGS={
   "erase": "Löschen",
   "symAria": "Symbol",
   "boardAria": "Sudoku-Feld",
-  "undo": "Rückgängig"
+  "undo": "Rückgängig",
+  "cat_food": "Essen"
  },
  "it": {
   "flag": "it",
@@ -311,7 +332,8 @@ window.LANGS={
   "erase": "Cancella",
   "symAria": "Simbolo",
   "boardAria": "Griglia del sudoku",
-  "undo": "Annulla"
+  "undo": "Annulla",
+  "cat_food": "Cibo"
  },
  "pt": {
   "flag": "pt",
@@ -363,7 +385,8 @@ window.LANGS={
   "erase": "Apagar",
   "symAria": "Símbolo",
   "boardAria": "Tabuleiro de sudoku",
-  "undo": "Desfazer"
+  "undo": "Desfazer",
+  "cat_food": "Comida"
  },
  "ru": {
   "flag": "ru",
@@ -415,7 +438,8 @@ window.LANGS={
   "erase": "Стереть",
   "symAria": "Символ",
   "boardAria": "Поле судоку",
-  "undo": "Отменить"
+  "undo": "Отменить",
+  "cat_food": "Еда"
  },
  "zh": {
   "flag": "cn",
@@ -467,7 +491,8 @@ window.LANGS={
   "erase": "擦除",
   "symAria": "符号",
   "boardAria": "数独棋盘",
-  "undo": "撤销"
+  "undo": "撤销",
+  "cat_food": "食物"
  },
  "ja": {
   "flag": "jp",
@@ -519,7 +544,8 @@ window.LANGS={
   "erase": "消す",
   "symAria": "記号",
   "boardAria": "数独の盤面",
-  "undo": "元に戻す"
+  "undo": "元に戻す",
+  "cat_food": "食べ物"
  },
  "ko": {
   "flag": "kr",
@@ -571,7 +597,8 @@ window.LANGS={
   "erase": "지우기",
   "symAria": "기호",
   "boardAria": "스도쿠 판",
-  "undo": "실행 취소"
+  "undo": "실행 취소",
+  "cat_food": "음식"
  },
  "ar": {
   "flag": "arab",
@@ -624,7 +651,8 @@ window.LANGS={
   "erase": "مسح",
   "symAria": "رمز",
   "boardAria": "لوحة سودوكو",
-  "undo": "تراجع"
+  "undo": "تراجع",
+  "cat_food": "طعام"
  },
  "hi": {
   "flag": "in",
@@ -676,7 +704,8 @@ window.LANGS={
   "erase": "मिटाएँ",
   "symAria": "चिह्न",
   "boardAria": "सुडोकू बोर्ड",
-  "undo": "पूर्ववत करें"
+  "undo": "पूर्ववत करें",
+  "cat_food": "खाना"
  },
  "tr": {
   "flag": "tr",
@@ -728,7 +757,8 @@ window.LANGS={
   "symAria": "Sembol",
   "boardAria": "Sudoku tahtası",
   "newAria": "Yeni bulmaca",
-  "undo": "Geri al"
+  "undo": "Geri al",
+  "cat_food": "Yiyecek"
  },
  "pl": {
   "flag": "pl",
@@ -780,7 +810,8 @@ window.LANGS={
   "symAria": "Symbol",
   "boardAria": "Plansza sudoku",
   "newAria": "Nowa łamigłówka",
-  "undo": "Cofnij"
+  "undo": "Cofnij",
+  "cat_food": "Jedzenie"
  },
  "nl": {
   "flag": "nl",
@@ -832,7 +863,8 @@ window.LANGS={
   "symAria": "Symbool",
   "boardAria": "Sudokubord",
   "newAria": "Nieuwe puzzel",
-  "undo": "Ongedaan maken"
+  "undo": "Ongedaan maken",
+  "cat_food": "Eten"
  },
  "sv": {
   "flag": "se",
@@ -884,7 +916,8 @@ window.LANGS={
   "symAria": "Symbol",
   "boardAria": "Sudokubräde",
   "newAria": "Nytt pussel",
-  "undo": "Ångra"
+  "undo": "Ångra",
+  "cat_food": "Mat"
  },
  "da": {
   "flag": "dk",
@@ -936,7 +969,8 @@ window.LANGS={
   "symAria": "Symbol",
   "boardAria": "Sudokubræt",
   "newAria": "Nyt puslespil",
-  "undo": "Fortryd"
+  "undo": "Fortryd",
+  "cat_food": "Mad"
  },
  "no": {
   "flag": "no",
@@ -988,7 +1022,8 @@ window.LANGS={
   "symAria": "Symbol",
   "boardAria": "Sudokubrett",
   "newAria": "Nytt puslespill",
-  "undo": "Angre"
+  "undo": "Angre",
+  "cat_food": "Mat"
  },
  "fi": {
   "flag": "fi",
@@ -1040,7 +1075,8 @@ window.LANGS={
   "symAria": "Symboli",
   "boardAria": "Sudokuruudukko",
   "newAria": "Uusi pulma",
-  "undo": "Kumoa"
+  "undo": "Kumoa",
+  "cat_food": "Ruoka"
  },
  "cs": {
   "flag": "cz",
@@ -1092,7 +1128,8 @@ window.LANGS={
   "symAria": "Symbol",
   "boardAria": "Hrací plocha sudoku",
   "newAria": "Nová hádanka",
-  "undo": "Zpět"
+  "undo": "Zpět",
+  "cat_food": "Jídlo"
  },
  "sk": {
   "flag": "sk",
@@ -1144,7 +1181,8 @@ window.LANGS={
   "symAria": "Symbol",
   "boardAria": "Hracia plocha sudoku",
   "newAria": "Nová hádanka",
-  "undo": "Späť"
+  "undo": "Späť",
+  "cat_food": "Jedlo"
  },
  "ro": {
   "flag": "ro",
@@ -1196,7 +1234,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Tabla de sudoku",
   "newAria": "Puzzle nou",
-  "undo": "Anulează"
+  "undo": "Anulează",
+  "cat_food": "Mâncare"
  },
  "bg": {
   "flag": "bg",
@@ -1248,7 +1287,8 @@ window.LANGS={
   "symAria": "Символ",
   "boardAria": "Дъска за судоку",
   "newAria": "Нова главоломка",
-  "undo": "Отмени"
+  "undo": "Отмени",
+  "cat_food": "Храна"
  },
  "uk": {
   "flag": "ua",
@@ -1300,7 +1340,8 @@ window.LANGS={
   "symAria": "Символ",
   "boardAria": "Дошка судоку",
   "newAria": "Нова головоломка",
-  "undo": "Скасувати"
+  "undo": "Скасувати",
+  "cat_food": "Їжа"
  },
  "el": {
   "flag": "gr",
@@ -1352,7 +1393,8 @@ window.LANGS={
   "symAria": "Σύμβολο",
   "boardAria": "Ταμπλό σουντόκου",
   "newAria": "Νέο παζλ",
-  "undo": "Αναίρεση"
+  "undo": "Αναίρεση",
+  "cat_food": "Φαγητό"
  },
  "hr": {
   "flag": "hr",
@@ -1404,7 +1446,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Ploča za sudoku",
   "newAria": "Nova slagalica",
-  "undo": "Poništi"
+  "undo": "Poništi",
+  "cat_food": "Hrana"
  },
  "sr": {
   "flag": "rs",
@@ -1456,7 +1499,8 @@ window.LANGS={
   "symAria": "Симбол",
   "boardAria": "Табла за судоку",
   "newAria": "Нова слагалица",
-  "undo": "Поништи"
+  "undo": "Поништи",
+  "cat_food": "Храна"
  },
  "sl": {
   "flag": "si",
@@ -1508,7 +1552,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Sudoku plošča",
   "newAria": "Nova uganka",
-  "undo": "Razveljavi"
+  "undo": "Razveljavi",
+  "cat_food": "Hrana"
  },
  "lt": {
   "flag": "lt",
@@ -1560,7 +1605,8 @@ window.LANGS={
   "symAria": "Simbolis",
   "boardAria": "Sudoku lenta",
   "newAria": "Nauja dėlionė",
-  "undo": "Atšaukti"
+  "undo": "Atšaukti",
+  "cat_food": "Maistas"
  },
  "lv": {
   "flag": "lv",
@@ -1612,7 +1658,8 @@ window.LANGS={
   "symAria": "Simbols",
   "boardAria": "Sudoku laukums",
   "newAria": "Jauna mīkla",
-  "undo": "Atsaukt"
+  "undo": "Atsaukt",
+  "cat_food": "Ēdiens"
  },
  "et": {
   "flag": "ee",
@@ -1664,7 +1711,8 @@ window.LANGS={
   "symAria": "Sümbol",
   "boardAria": "Sudokulaud",
   "newAria": "Uus pusle",
-  "undo": "Võta tagasi"
+  "undo": "Võta tagasi",
+  "cat_food": "Toit"
  },
  "pt-br": {
   "flag": "br",
@@ -1716,7 +1764,8 @@ window.LANGS={
   "symAria": "Símbolo",
   "boardAria": "Tabuleiro de sudoku",
   "newAria": "Novo quebra-cabeça",
-  "undo": "Desfazer"
+  "undo": "Desfazer",
+  "cat_food": "Comida"
  },
  "ca": {
   "flag": "es-ct",
@@ -1768,7 +1817,8 @@ window.LANGS={
   "symAria": "Símbol",
   "boardAria": "Tauler de sudoku",
   "newAria": "Nou trencaclosques",
-  "undo": "Desfés"
+  "undo": "Desfés",
+  "cat_food": "Menjar"
  },
  "he": {
   "flag": "il",
@@ -1821,7 +1871,8 @@ window.LANGS={
   "symAria": "סמל",
   "boardAria": "לוח סודוקו",
   "newAria": "חידה חדשה",
-  "undo": "בטל"
+  "undo": "בטל",
+  "cat_food": "אוכל"
  },
  "id": {
   "flag": "id",
@@ -1873,7 +1924,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Papan sudoku",
   "newAria": "Teka-teki baru",
-  "undo": "Urungkan"
+  "undo": "Urungkan",
+  "cat_food": "Makanan"
  },
  "ms": {
   "flag": "my",
@@ -1925,7 +1977,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Papan sudoku",
   "newAria": "Teka-teki baharu",
-  "undo": "Buat asal"
+  "undo": "Buat asal",
+  "cat_food": "Makanan"
  },
  "vi": {
   "flag": "vn",
@@ -1977,7 +2030,8 @@ window.LANGS={
   "symAria": "Biểu tượng",
   "boardAria": "Bảng sudoku",
   "newAria": "Câu đố mới",
-  "undo": "Hoàn tác"
+  "undo": "Hoàn tác",
+  "cat_food": "Đồ ăn"
  },
  "th": {
   "flag": "th",
@@ -2029,7 +2083,8 @@ window.LANGS={
   "symAria": "สัญลักษณ์",
   "boardAria": "กระดานซูโดกุ",
   "newAria": "ปริศนาใหม่",
-  "undo": "เลิกทำ"
+  "undo": "เลิกทำ",
+  "cat_food": "อาหาร"
  },
  "bn": {
   "flag": "bd",
@@ -2081,7 +2136,8 @@ window.LANGS={
   "symAria": "প্রতীক",
   "boardAria": "সুডোকু বোর্ড",
   "newAria": "নতুন ধাঁধা",
-  "undo": "পূর্বাবস্থায় ফেরান"
+  "undo": "পূর্বাবস্থায় ফেরান",
+  "cat_food": "খাবার"
  },
  "ta": {
   "flag": "in",
@@ -2133,7 +2189,8 @@ window.LANGS={
   "symAria": "சின்னம்",
   "boardAria": "சுடோகு பலகை",
   "newAria": "புதிய புதிர்",
-  "undo": "செயல்தவிர்"
+  "undo": "செயல்தவிர்",
+  "cat_food": "உணவு"
  },
  "te": {
   "flag": "in",
@@ -2185,7 +2242,8 @@ window.LANGS={
   "symAria": "చిహ్నం",
   "boardAria": "సుడోకు బోర్డు",
   "newAria": "కొత్త పజిల్",
-  "undo": "చర్య రద్దు"
+  "undo": "చర్య రద్దు",
+  "cat_food": "ఆహారం"
  },
  "mr": {
   "flag": "in",
@@ -2237,7 +2295,8 @@ window.LANGS={
   "symAria": "चिन्ह",
   "boardAria": "सुडोकू बोर्ड",
   "newAria": "नवीन कोडे",
-  "undo": "पूर्ववत करा"
+  "undo": "पूर्ववत करा",
+  "cat_food": "अन्न"
  },
  "ur": {
   "flag": "pk",
@@ -2290,7 +2349,8 @@ window.LANGS={
   "symAria": "علامت",
   "boardAria": "سوڈوکو بورڈ",
   "newAria": "نئی پہیلی",
-  "undo": "کالعدم کریں"
+  "undo": "کالعدم کریں",
+  "cat_food": "کھانا"
  },
  "fa": {
   "flag": "ir",
@@ -2343,7 +2403,8 @@ window.LANGS={
   "symAria": "نماد",
   "boardAria": "صفحهٔ سودوکو",
   "newAria": "معمای جدید",
-  "undo": "واگرد"
+  "undo": "واگرد",
+  "cat_food": "غذا"
  },
  "zh-tw": {
   "flag": "globe",
@@ -2395,7 +2456,8 @@ window.LANGS={
   "symAria": "符號",
   "boardAria": "數獨棋盤",
   "newAria": "新題目",
-  "undo": "復原"
+  "undo": "復原",
+  "cat_food": "食物"
  },
  "sw": {
   "flag": "globe",
@@ -2447,7 +2509,8 @@ window.LANGS={
   "symAria": "Alama",
   "boardAria": "Ubao wa sudoku",
   "newAria": "Fumbo jipya",
-  "undo": "Tendua"
+  "undo": "Tendua",
+  "cat_food": "Chakula"
  },
  "af": {
   "flag": "za",
@@ -2499,7 +2562,8 @@ window.LANGS={
   "symAria": "Simbool",
   "boardAria": "Sudoku-bord",
   "newAria": "Nuwe legkaart",
-  "undo": "Ontdoen"
+  "undo": "Ontdoen",
+  "cat_food": "Kos"
  },
  "sq": {
   "flag": "al",
@@ -2551,7 +2615,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Tabela e sudokut",
   "newAria": "Enigmë e re",
-  "undo": "Zhbëj"
+  "undo": "Zhbëj",
+  "cat_food": "Ushqim"
  },
  "az": {
   "flag": "az",
@@ -2603,7 +2668,8 @@ window.LANGS={
   "symAria": "Simvol",
   "boardAria": "Sudoku lövhəsi",
   "newAria": "Yeni tapmaca",
-  "undo": "Geri al"
+  "undo": "Geri al",
+  "cat_food": "Yemək"
  },
  "be": {
   "flag": "by",
@@ -2655,7 +2721,8 @@ window.LANGS={
   "symAria": "Сімвал",
   "boardAria": "Дошка судоку",
   "newAria": "Новая галаваломка",
-  "undo": "Адрабіць"
+  "undo": "Адрабіць",
+  "cat_food": "Ежа"
  },
  "is": {
   "flag": "is",
@@ -2707,7 +2774,8 @@ window.LANGS={
   "symAria": "Tákn",
   "boardAria": "Sudoku-borð",
   "newAria": "Ný þraut",
-  "undo": "Afturkalla"
+  "undo": "Afturkalla",
+  "cat_food": "Matur"
  },
  "mk": {
   "flag": "mk",
@@ -2759,7 +2827,8 @@ window.LANGS={
   "symAria": "Симбол",
   "boardAria": "Табла за судоку",
   "newAria": "Нова загатка",
-  "undo": "Врати"
+  "undo": "Врати",
+  "cat_food": "Храна"
  },
  "fil": {
   "flag": "ph",
@@ -2811,7 +2880,8 @@ window.LANGS={
   "symAria": "Simbolo",
   "boardAria": "Sudoku board",
   "newAria": "Bagong puzzle",
-  "undo": "I-undo"
+  "undo": "I-undo",
+  "cat_food": "Pagkain"
  },
  "uz": {
   "flag": "uz",
@@ -2864,7 +2934,8 @@ window.LANGS={
   "symAria": "Belgi",
   "boardAria": "Sudoku taxtasi",
   "newAria": "Yangi jumboq",
-  "undo": "Ortga"
+  "undo": "Ortga",
+  "cat_food": "Ovqat"
  },
  "so": {
   "flag": "so",
@@ -2917,7 +2988,8 @@ window.LANGS={
   "symAria": "Calaamad",
   "boardAria": "Looxa sudoku",
   "newAria": "Xujo cusub",
-  "undo": "Ka laabo"
+  "undo": "Ka laabo",
+  "cat_food": "Cunto"
  },
  "ha": {
   "flag": "ng",
@@ -2970,7 +3042,8 @@ window.LANGS={
   "symAria": "Alama",
   "boardAria": "Allon sudoku",
   "newAria": "Sabon wasan ƙwaƙwalwa",
-  "undo": "Mayar"
+  "undo": "Mayar",
+  "cat_food": "Abinci"
  },
  "yo": {
   "flag": "ng",
@@ -3023,7 +3096,8 @@ window.LANGS={
   "symAria": "Àmì",
   "boardAria": "Pátákó sudoku",
   "newAria": "Àdììtú tuntun",
-  "undo": "Dá padà"
+  "undo": "Dá padà",
+  "cat_food": "Oúnjẹ"
  },
  "ig": {
   "flag": "ng",
@@ -3076,7 +3150,8 @@ window.LANGS={
   "symAria": "Akara",
   "boardAria": "Bọọdụ sudoku",
   "newAria": "Mgbagwoju anya ọhụrụ",
-  "undo": "Laghachi azụ"
+  "undo": "Laghachi azụ",
+  "cat_food": "Nri"
  },
  "eu": {
   "flag": "es-pv",
@@ -3128,7 +3203,8 @@ window.LANGS={
   "symAria": "Ikurra",
   "boardAria": "Sudoku taula",
   "newAria": "Puzzle berria",
-  "undo": "Desegin"
+  "undo": "Desegin",
+  "cat_food": "Janaria"
  },
  "ku": {
   "flag": "globe",
@@ -3181,7 +3257,8 @@ window.LANGS={
   "symAria": "Sembol",
   "boardAria": "Tabloya sudokuyê",
   "newAria": "Puzzla nû",
-  "undo": "Vegerîne"
+  "undo": "Vegerîne",
+  "cat_food": "Xwarin"
  },
  "gl": {
   "flag": "es-ga",
@@ -3233,7 +3310,8 @@ window.LANGS={
   "symAria": "Símbolo",
   "boardAria": "Taboleiro de sudoku",
   "newAria": "Novo crebacabezas",
-  "undo": "Desfacer"
+  "undo": "Desfacer",
+  "cat_food": "Comida"
  },
  "rm": {
   "flag": "globe",
@@ -3286,7 +3364,8 @@ window.LANGS={
   "symAria": "Simbol",
   "boardAria": "Tavla da sudoku",
   "newAria": "Nov puzzle",
-  "undo": "Annullar"
+  "undo": "Annullar",
+  "cat_food": "Mangiar"
  },
  "tt": {
   "flag": "ru",
@@ -3339,7 +3418,8 @@ window.LANGS={
   "symAria": "Символ",
   "boardAria": "Судоку тактасы",
   "newAria": "Яңа табышмак",
-  "undo": "Кире кайтару"
+  "undo": "Кире кайтару",
+  "cat_food": "Ашамлык"
  },
  "kk": {
   "flag": "kz",
@@ -3392,7 +3472,8 @@ window.LANGS={
   "symAria": "Таңба",
   "boardAria": "Судоку тақтасы",
   "newAria": "Жаңа жұмбақ",
-  "undo": "Болдырмау"
+  "undo": "Болдырмау",
+  "cat_food": "Тамақ"
  },
  "ky": {
   "flag": "kg",
@@ -3445,7 +3526,8 @@ window.LANGS={
   "symAria": "Белги",
   "boardAria": "Судоку тактасы",
   "newAria": "Жаңы табышмак",
-  "undo": "Артка кайтаруу"
+  "undo": "Артка кайтаруу",
+  "cat_food": "Тамак-аш"
  },
  "mn": {
   "flag": "mn",
@@ -3498,7 +3580,8 @@ window.LANGS={
   "symAria": "Тэмдэг",
   "boardAria": "Судоку самбар",
   "newAria": "Шинэ оньсого",
-  "undo": "Буцаах"
+  "undo": "Буцаах",
+  "cat_food": "Хоол"
  },
  "am": {
   "flag": "et",
@@ -3551,7 +3634,8 @@ window.LANGS={
   "symAria": "ምልክት",
   "boardAria": "የሱዶኩ ሰሌዳ",
   "newAria": "አዲስ እንቆቅልሽ",
-  "undo": "ቀልብስ"
+  "undo": "ቀልብስ",
+  "cat_food": "ምግብ"
  },
  "hy": {
   "flag": "am",
@@ -3603,7 +3687,8 @@ window.LANGS={
   "symAria": "Նշան",
   "boardAria": "Սուդոկուի տախտակ",
   "newAria": "Նոր հանելուկ",
-  "undo": "Հետարկել"
+  "undo": "Հետարկել",
+  "cat_food": "Սնունդ"
  },
  "my": {
   "flag": "mm",
@@ -3656,7 +3741,8 @@ window.LANGS={
   "symAria": "သင်္ကေတ",
   "boardAria": "ဆူဒိုကုဘုတ်",
   "newAria": "ပုစ္ဆာအသစ်",
-  "undo": "နောက်ပြန်"
+  "undo": "နောက်ပြန်",
+  "cat_food": "အစားအစာ"
  },
  "ka": {
   "flag": "ge",
@@ -3708,7 +3794,8 @@ window.LANGS={
   "symAria": "სიმბოლო",
   "boardAria": "სუდოკუს დაფა",
   "newAria": "ახალი თავსატეხი",
-  "undo": "გაუქმება"
+  "undo": "გაუქმება",
+  "cat_food": "საჭმელი"
  },
  "gu": {
   "flag": "in",
@@ -3760,7 +3847,8 @@ window.LANGS={
   "symAria": "ચિહ્ન",
   "boardAria": "સુડોકુ બોર્ડ",
   "newAria": "નવો કોયડો",
-  "undo": "પૂર્વવત્ કરો"
+  "undo": "પૂર્વવત્ કરો",
+  "cat_food": "ખોરાક"
  },
  "kn": {
   "flag": "in",
@@ -3812,7 +3900,8 @@ window.LANGS={
   "symAria": "ಚಿಹ್ನೆ",
   "boardAria": "ಸುಡೋಕು ಬೋರ್ಡ್",
   "newAria": "ಹೊಸ ಒಗಟು",
-  "undo": "ರದ್ದುಗೊಳಿಸು"
+  "undo": "ರದ್ದುಗೊಳಿಸು",
+  "cat_food": "ಆಹಾರ"
  },
  "km": {
   "flag": "kh",
@@ -3865,7 +3954,8 @@ window.LANGS={
   "symAria": "និមិត្តសញ្ញា",
   "boardAria": "ក្តារស៊ូដូគូ",
   "newAria": "ល្បែងផ្គុំរូបថ្មី",
-  "undo": "មិនធ្វើវិញ"
+  "undo": "មិនធ្វើវិញ",
+  "cat_food": "អាហារ"
  },
  "lo": {
   "flag": "la",
@@ -3918,7 +4008,8 @@ window.LANGS={
   "symAria": "ສັນຍາລັກ",
   "boardAria": "ກະດານຊູໂດກຸ",
   "newAria": "ປິດສະໜາໃໝ່",
-  "undo": "ຍົກເລີກການກະທຳ"
+  "undo": "ຍົກເລີກການກະທຳ",
+  "cat_food": "ອາຫານ"
  },
  "ml": {
   "flag": "in",
@@ -3970,7 +4061,8 @@ window.LANGS={
   "symAria": "ചിഹ്നം",
   "boardAria": "സുഡോകു ബോർഡ്",
   "newAria": "പുതിയ പസിൽ",
-  "undo": "പഴയപടിയാക്കുക"
+  "undo": "പഴയപടിയാക്കുക",
+  "cat_food": "ഭക്ഷണം"
  },
  "ne": {
   "flag": "np",
@@ -4022,7 +4114,8 @@ window.LANGS={
   "symAria": "चिन्ह",
   "boardAria": "सुडोकु बोर्ड",
   "newAria": "नयाँ पजल",
-  "undo": "पूर्ववत"
+  "undo": "पूर्ववत",
+  "cat_food": "खाना"
  },
  "pa": {
   "flag": "in",
@@ -4074,7 +4167,8 @@ window.LANGS={
   "symAria": "ਚਿੰਨ੍ਹ",
   "boardAria": "ਸੁਡੋਕੂ ਬੋਰਡ",
   "newAria": "ਨਵੀਂ ਬੁਝਾਰਤ",
-  "undo": "ਪਿੱਛੇ"
+  "undo": "ਪਿੱਛੇ",
+  "cat_food": "ਖਾਣਾ"
  },
  "si": {
   "flag": "lk",
@@ -4127,7 +4221,8 @@ window.LANGS={
   "symAria": "සංකේතය",
   "boardAria": "සුඩෝකු පුවරුව",
   "newAria": "නව ප්‍රහේලිකාව",
-  "undo": "ආපසු"
+  "undo": "ආපසු",
+  "cat_food": "ආහාර"
  },
  "or": {
   "flag": "in",
@@ -4180,6 +4275,7 @@ window.LANGS={
   "symAria": "ଚିହ୍ନ",
   "boardAria": "ସୁଡୋକୁ ବୋର୍ଡ୍",
   "newAria": "ନୂଆ ପଜଲ୍",
-  "undo": "ପୂର୍ବବତ୍"
+  "undo": "ପୂର୍ବବତ୍",
+  "cat_food": "ଖାଦ୍ୟ"
  }
 };
